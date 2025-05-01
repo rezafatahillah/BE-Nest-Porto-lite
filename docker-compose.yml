@@ -1,0 +1,49 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: nest_projectname_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: nest_projectname
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3310:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: nest_projectname_redis
+    command: redis-server --requirepass password
+    ports:
+      - "6333:6379"
+    volumes:
+      - redis_data:/data
+
+  smtp:
+    image: rnwood/smtp4dev
+    container_name: nest_projectname_smtp
+    restart: always
+    ports:
+      - "3030:80"
+      - "2525:25"
+
+  mqtt5:
+    image: eclipse-mosquitto
+    container_name: nest_projectname_mqtt5
+    ports:
+      - "1883:1883" #default mqtt port
+      - "9001:9001" #default mqtt port for websockets
+    volumes:
+      - ./docker/mqtt5_config:/mosquitto/config:rw
+      - ./docker/mqtt5_data:/mosquitto/data:rw
+      - ./docker/mqtt5_log:/mosquitto/log:rw
+
+volumes:
+  mysql_data:
+  redis_data:
+  minio_data:
+  mqtt5_config:
+  mqtt5_data:
+  mqtt5_log:
